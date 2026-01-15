@@ -1460,32 +1460,43 @@ let leaderboardData = [];
 let leaderboardFrozen = false;
 let countdownStarted = false;
 
+let leaderboardEndTime = null;
+let serverOffset = 0;
+
 /* ===============================
    CONFIG
 ================================ */
 const API_URL = "https://gaze-leaderboard-api.akashbhowmik110.workers.dev/";
-const REFRESH_INTERVAL = 30000; // 30 seconds (LIVE)
-const LEADERBOARD_DURATION_DAYS = 30;
-const STORAGE_KEY = "waki_leaderboard_end";
+const TIMER_URL = "https://leaderboard-timer.akashbhowmik110.workers.dev/";
+const REFRESH_INTERVAL = 30000; // 30 seconds
 
 /* ===============================
-   LEADERBOARD END DATE (FRONTEND TIMER ONLY)
+   HELPER: MASK USERNAME
 ================================ */
-function getLeaderboardEndDate() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-
-  if (!stored) {
-    const end = new Date();
-    end.setDate(end.getDate() + LEADERBOARD_DURATION_DAYS);
-    localStorage.setItem(STORAGE_KEY, end.toISOString());
-    return end;
-  }
-
-  return new Date(stored);
+function maskUsername(username) {
+  if (!username) return "";
+  return username.slice(0, 3) + "***";
 }
 
 /* ===============================
-   FETCH LIVE LEADERBOARD (WORKER)
+   FETCH TIMER (CLOUDFLARE)
+================================ */
+async function fetchTimer() {
+  try {
+    const res = await fetch(TIMER_URL);
+    const json = await res.json();
+
+    leaderboardEndTime = json.endTime;
+    serverOffset = json.serverNow - Date.now();
+
+    startCountdown();
+  } catch (err) {
+    console.error("Timer API error:", err);
+  }
+}
+
+/* ===============================
+   FETCH LIVE LEADERBOARD
 ================================ */
 async function fetchLeaderboardData() {
   if (leaderboardFrozen) return;
@@ -1496,11 +1507,9 @@ async function fetchLeaderboardData() {
 
     if (!json.success) return;
 
-    // Backend controls freeze (authoritative)
     leaderboardFrozen = json.frozen === true;
 
     const data = json.data;
-
     data.sort((a, b) => b.wagered - a.wagered);
 
     leaderboardData = data.map((user, index) => {
@@ -1542,7 +1551,7 @@ function loadPreviewTable() {
       <td class="rank-cell rank-${player.rank}">${player.rank}</td>
       <td class="user-cell">
         <div class="user-avatar">${player.username.charAt(0)}</div>
-        ${player.username}
+        ${maskUsername(player.username)}
       </td>
       <td class="wagered-cell">$${player.wagered.toLocaleString()}</td>
       <td class="prize-cell">${player.prize ? "$" + player.prize : "-"}</td>
@@ -1553,13 +1562,12 @@ function loadPreviewTable() {
 }
 
 /* ===============================
-   FULL LEADERBOARD (LIVE + ANIM)
+   FULL LEADERBOARD
 ================================ */
 function loadFullLeaderboard() {
   const body = document.getElementById("leaderboard-body");
   if (!body) return;
 
-  // Capture previous wagers (for animation)
   const previous = {};
   document.querySelectorAll(".wagered-cell").forEach(cell => {
     const user = cell.dataset.user;
@@ -1578,7 +1586,7 @@ function loadFullLeaderboard() {
       <td class="rank-cell rank-${player.rank}">${player.rank}</td>
       <td class="user-cell">
         <div class="user-avatar">${player.username.charAt(0)}</div>
-        ${player.username}
+        ${maskUsername(player.username)}
       </td>
       <td class="wagered-cell" data-user="${player.username}">
         $${player.wagered.toLocaleString()}
@@ -1588,7 +1596,6 @@ function loadFullLeaderboard() {
 
     body.appendChild(row);
 
-    // Animate wager increase
     const cell = row.querySelector(".wagered-cell");
     const oldVal = previous[player.username] || 0;
 
@@ -1600,17 +1607,15 @@ function loadFullLeaderboard() {
 }
 
 /* ===============================
-   COUNTDOWN (FRONTEND DISPLAY)
+   COUNTDOWN (CLOUDFLARE TIME)
 ================================ */
 function startCountdown() {
-  if (countdownStarted) return;
+  if (countdownStarted || !leaderboardEndTime) return;
   countdownStarted = true;
 
-  const endDate = getLeaderboardEndDate();
-
   function tick() {
-    const now = Date.now();
-    const diff = endDate - now;
+    const now = Date.now() + serverOffset;
+    const diff = leaderboardEndTime - now;
 
     if (diff <= 0) {
       ["days", "hours", "mins", "secs"].forEach(id => {
@@ -1656,7 +1661,7 @@ function showSection(sectionId) {
 
   if (sectionId === "leaderboards") {
     fetchLeaderboardData();
-    startCountdown();
+    fetchTimer();
   }
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1667,6 +1672,7 @@ function showSection(sectionId) {
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
   fetchLeaderboardData();
+  fetchTimer();
   setInterval(fetchLeaderboardData, REFRESH_INTERVAL);
 });
 </script>
