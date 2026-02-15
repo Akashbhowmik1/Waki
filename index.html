@@ -2,47 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Waki - Monthly Leaderboards & Rewards</title>
+  <title>Waki -  Leaderboards & Rewards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/jpg" href="icon.jpg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-    /* ===== Screenshot Colors ===== */
-    --bg-primary: #151a34;
-    --bg-secondary: #1c2344;
-    --bg-tertiary: #1c2344;
+    /* ===== Dark Purple Theme (inspired by fainterhdrewards.com) ===== */
+    --bg-primary: #0e0b1a;        /* Deep purple-black background */
+    --bg-secondary: #1a1429;       /* Rich purple for cards/sections */
+    --bg-tertiary: #231d34;        /* Slightly lighter purple for contrast */
 
-    /* ===== Accent System - Royal Blue ===== */
-    --accent: #1f6ae1;
-    --accent-hover: #2d7af0;
-    --accent-light: #4d8cef;
-    --accent-muted: rgba(31, 106, 225, 0.15);
-    --accent-glow: 0 0 25px rgba(31, 106, 225, 0.3);
+    /* ===== Accent System - Vibrant Purple ===== */
+    --accent: #9147ff;              /* Main purple accent (like reference site) */
+    --accent-hover: #a35cff;        /* Lighter purple for hover states */
+    --accent-light: #b77eff;        /* Very light purple for highlights */
+    --accent-muted: rgba(145, 71, 255, 0.15);  /* Transparent purple */
+    --accent-glow: 0 0 25px rgba(145, 71, 255, 0.3);  /* Purple glow effect */
 
     /* ===== Text Colors ===== */
-    --text-primary: #ffffff;
-    --text-secondary: #d1d5db;
-    --text-muted: #9ca3af;
-    --text-inverse: #151a34;
+    --text-primary: #ffffff;         /* Pure white for primary text */
+    --text-secondary: #d1d5db;       /* Light gray for secondary text */
+    --text-muted: #9ca3af;           /* Muted gray for less important text */
+    --text-inverse: #0e0b1a;         /* Dark text for light backgrounds */
 
     /* ===== Status Colors ===== */
-    --gold: #fbbf24;
-    --silver: #94a3b8;
-    --bronze: #fb923c;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --error: #ef4444;
+    --gold: #fbbf24;                  /* Warm gold for 1st place */
+    --silver: #94a3b8;                /* Cool silver for 2nd place */
+    --bronze: #fb923c;                /* Orange-bronze for 3rd place */
+    --success: #10b981;                /* Green for success states */
+    --warning: #f59e0b;                /* Amber for warnings */
+    --error: #ef4444;                  /* Red for errors */
 
     /* ===== Tables ===== */
-    --table-header: rgba(31, 106, 225, 0.2);
-    --table-row: rgba(31, 106, 225, 0.08);
-    --table-row-hover: rgba(31, 106, 225, 0.15);
+    --table-header: rgba(145, 71, 255, 0.2);    /* Purple-tinted table headers */
+    --table-row: rgba(145, 71, 255, 0.08);      /* Subtle purple row background */
+    --table-row-hover: rgba(145, 71, 255, 0.15); /* Purple highlight on hover */
 
     /* ===== Shadows ===== */
-    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 15px 50px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.5);      /* Darker shadows for depth */
+    --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 15px 50px rgba(0, 0, 0, 0.7);
 
     /* ===== Radius ===== */
     --radius-sm: 6px;
@@ -74,26 +74,105 @@ html {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== BODY - Screenshot Background ===== */
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-        Roboto, Helvetica, Arial, sans-serif;
-    font-size: 14px;
+/* ===== BODY - Dark Purple Background with Subtle Grid ===== */
 
-    background: 
-        linear-gradient(rgba(28, 35, 68, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(28, 35, 68, 0.1) 1px, transparent 1px),
-        var(--bg-primary);
+        body {
+            background-color: var(--theme-bg-slate);
+            background-image:
+                radial-gradient(circle at 50% 50%, rgba(var(--theme-primary-rgb),0.25)
+, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(255, 199, 0, 0.2), transparent 60%),
+                radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15), transparent 50%),
+                linear-gradient(to bottom, rgba(18, 18, 31, 0.95), var(--theme-bg-slate));
+            color: #fff;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+      /* ===== DEFAULT (BLUE THEME) ===== */
+body{
+    --theme-primary:#2563eb;
+    --theme-primary-dark:#1d4ed8;
+    --theme-accent:#22c55e;
+    --theme-accent-dark:#16a34a;
 
-    background-size: 30px 30px;
-    color: var(--text-primary);
-    min-height: 100vh;
-    line-height: 1.5;
-    overflow-x: hidden;
-    width: 100%;
-    position: relative;
+    --theme-primary-rgb:37,99,235;
+    --theme-accent-rgb:34,197,94;
+
+    --theme-primary-glow:rgba(var(--theme-primary-rgb),0.6);
+    --theme-bg-slate:#0a0f1f;
+    --theme-bg-slate-light:#121a2f;
 }
 
+
+/* ===== LIGHT THEME ===== */
+body.light-theme{
+    --theme-primary:#10b981;
+    --theme-primary-dark:#059669;
+    --theme-accent:#22c55e;
+    --theme-accent-dark:#16a34a;
+    --theme-primary-glow:rgba(16,185,129,0.6);
+    --theme-bg-slate:#f0fdf4;
+    --theme-bg-slate-light:#ffffff;
+}
+
+/* ===== BLUE THEME ===== */
+body.blue-theme{
+    --theme-primary:#2563eb;
+    --theme-primary-dark:#1d4ed8;
+    --theme-accent:#22c55e;
+    --theme-accent-dark:#16a34a;
+    --theme-primary-glow:rgba(37,99,235,0.6);
+}
+
+/* ===== RED THEME ===== */
+body.red-theme{
+    --theme-primary:#ef4444;
+    --theme-primary-dark:#dc2626;
+    --theme-accent:#f59e0b;
+    --theme-accent-dark:#d97706;
+    --theme-primary-glow:rgba(239,68,68,0.6);
+}
+
+/* ===== PURPLE THEME ===== */
+body.purple-theme{
+    --theme-primary:#a855f7;
+    --theme-primary-dark:#9333ea;
+    --theme-accent:#FFC700;
+    --theme-accent-dark:#E5B200;
+    --theme-primary-glow:rgba(168,85,247,0.6);
+}
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="10" cy="10" r="1.5" fill="%23ffffff" opacity="0.15"/%3E%3Ccircle cx="90" cy="20" r="0.8" fill="%23ffffff" opacity="0.1"/%3E%3Ccircle cx="50" cy="80" r="1" fill="%23ffffff" opacity="0.12"/%3E%3Ccircle cx="30" cy="50" r="1.5" fill="%23ffffff" opacity="0.18"/%3E%3Ccircle cx="70" cy="40" r="1" fill="%23ffffff" opacity="0.15"/%3E%3Ccircle cx="15" cy="85" r="1.2" fill="%23ffffff" opacity="0.1"/%3E%3Ccircle cx="85" cy="15" r="1.4" fill="%23ffffff" opacity="0.14"/%3E%3Ccircle cx="40" cy="20" r="0.6" fill="%23ffffff" opacity="0.08"/%3E%3Ccircle cx="60" cy="70" r="0.9" fill="%23ffffff" opacity="0.11"/%3E%3C/svg%3E') repeat;
+            background-size: 200px 200px;
+            opacity: 0.1;
+            z-index: -1;
+            animation: twinkle 3s infinite alternate ease-in-out;
+        }
+        body.light-theme::before {
+            display: none;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+            animation: pulse 8s infinite alternate ease-in-out;
+            z-index: -2;
+        }
 /* ===== CONTENT LAYER ===== */
 main,
 section,
@@ -109,17 +188,17 @@ footer {
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(28, 35, 68, 0.5);
+    background: rgba(26, 20, 41, 0.5);  /* Dark purple track */
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--accent);
+    background: var(--accent);            /* Purple scrollbar thumb */
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-hover);
+    background: var(--accent-hover);      /* Lighter purple on hover */
 }
 
     /* ===== CONTAINER ===== */
@@ -131,19 +210,19 @@ footer {
     position: relative;
 }
 
-/* ===== HEADER - Dark Navy Blue ===== */
+/* ===== HEADER - Dark Purple with Blur ===== */
 header {
     position: sticky;
     top: 0;
     z-index: 1000;
     width: 100%;
 
-    background: rgba(21, 26, 52, 0.95);
+    background: rgba(18, 18, 31, 0.95);  /* Dark purple with transparency */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(145, 71, 255, 0.2);  /* Purple border */
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* ===== HEADER CONTENT ===== */
@@ -171,11 +250,11 @@ header {
     border-radius: 8px;
     object-fit: cover;
 
-    background: var(--accent);
+    background: var(--accent);            /* Purple background */
     border: 1px solid rgba(255, 255, 255, 0.1);
 
     box-shadow: 
-        0 4px 15px rgba(31, 106, 225, 0.3),
+        0 4px 15px rgba(145, 71, 255, 0.3),  /* Purple glow */
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
     transition: var(--transition);
@@ -184,7 +263,7 @@ header {
 .logo-container:hover .logo-img {
     transform: scale(1.05);
     box-shadow: 
-        0 6px 20px rgba(31, 106, 225, 0.4),
+        0 6px 20px rgba(145, 71, 255, 0.4),  /* Stronger purple glow */
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -222,12 +301,12 @@ header {
 
 .nav-link:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(145, 71, 255, 0.1);  /* Purple tint on hover */
 }
 
 .nav-link.active {
-    color: var(--accent);
-    background: rgba(31, 106, 225, 0.1);
+    color: var(--accent);                   /* Purple text for active */
+    background: rgba(145, 71, 255, 0.15);   /* Purple background for active */
 }
 
 /* ===== CTA BUTTON ===== */
@@ -242,7 +321,7 @@ header {
     letter-spacing: 0.5px;
 
     color: white;
-    background: var(--accent);
+    background: var(--accent);               /* Purple background */
 
     border: none;
     border-radius: 6px;
@@ -250,15 +329,15 @@ header {
     text-decoration: none;
 
     box-shadow: 
-        0 4px 15px rgba(31, 106, 225, 0.3);
+        0 4px 15px rgba(145, 71, 255, 0.3);  /* Purple glow */
     transition: var(--transition);
 }
 
 .support-btn:hover {
-    background: var(--accent-hover);
+    background: var(--accent-hover);         /* Lighter purple on hover */
     transform: translateY(-2px);
     box-shadow: 
-        0 6px 20px rgba(31, 106, 225, 0.4);
+        0 6px 20px rgba(145, 71, 255, 0.4);  /* Stronger purple glow */
 }
 
 /* ===== RESPONSIVE HEADER ===== */
@@ -350,31 +429,31 @@ header {
 
 /* ===== PRIMARY CTA ===== */
 .btn-primary {
-    background: var(--accent);
+    background: var(--accent);                /* Purple background */
     color: white;
 
     box-shadow: 
-        0 4px 15px rgba(31, 106, 225, 0.3);
+        0 4px 15px rgba(145, 71, 255, 0.3);  /* Purple glow */
 }
 
 .btn-primary:hover {
-    background: var(--accent-hover);
+    background: var(--accent-hover);          /* Lighter purple on hover */
     transform: translateY(-2px);
     box-shadow: 
-        0 6px 20px rgba(31, 106, 225, 0.4);
+        0 6px 20px rgba(145, 71, 255, 0.4);  /* Stronger purple glow */
 }
 
 /* ===== SECONDARY CTA ===== */
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(145, 71, 255, 0.1);      /* Purple tint */
     color: var(--text-primary);
 
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(145, 71, 255, 0.3); /* Purple border */
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--accent);
+    background: rgba(145, 71, 255, 0.2);      /* Stronger purple tint */
+    border-color: var(--accent);               /* Solid purple border */
     transform: translateY(-2px);
 }
 
@@ -441,13 +520,13 @@ header {
     padding: 30px;
     border-radius: var(--radius-lg);
 
-    background: rgba(28, 35, 68, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-secondary);          /* Dark purple card background */
+    border: 1px solid rgba(145, 71, 255, 0.3); /* Purple border */
 
     box-shadow: var(--shadow-md);
 }
 
-/* Top accent line */
+/* Top accent line - Purple */
 .free-rewards::before {
     content: "";
     position: absolute;
@@ -456,7 +535,7 @@ header {
     right: 0;
     height: 3px;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    background: var(--accent);
+    background: var(--accent);                 /* Purple accent line */
 }
 
 /* ===== FEATURED BADGE ===== */
@@ -474,11 +553,11 @@ header {
     text-transform: uppercase;
 
     color: white;
-    background: var(--accent);
+    background: var(--accent);                 /* Purple background */
 
     border-radius: 20px;
     box-shadow: 
-        0 4px 12px rgba(31, 106, 225, 0.3);
+        0 4px 12px rgba(145, 71, 255, 0.3);   /* Purple glow */
 }
 
 /* ===== PARTNER LOGO / TITLE ===== */
@@ -505,8 +584,8 @@ header {
     padding: 12px 16px;
     border-radius: var(--radius-md);
 
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(145, 71, 255, 0.08);      /* Subtle purple background */
+    border: 1px solid rgba(145, 71, 255, 0.15); /* Purple border */
 
     font-size: 0.95rem;
     color: var(--text-primary);
@@ -514,13 +593,13 @@ header {
 }
 
 .reward-features li:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(145, 71, 255, 0.15);      /* Stronger purple on hover */
+    border-color: rgba(145, 71, 255, 0.3);
 }
 
 .reward-features i {
     font-size: 1rem;
-    color: var(--accent);
+    color: var(--accent);                       /* Purple icons */
     flex-shrink: 0;
 }
 
@@ -538,11 +617,11 @@ header {
     text-align: center;
 
     color: var(--gold);
-    background: rgba(21, 26, 52, 0.7);
+    background: rgba(14, 11, 26, 0.7);         /* Dark purple background */
 
-    border: 2px dashed var(--accent);
+    border: 2px dashed var(--accent);           /* Purple dashed border */
     box-shadow: 
-        0 4px 20px rgba(31, 106, 225, 0.2);
+        0 4px 20px rgba(145, 71, 255, 0.2);    /* Purple glow */
 }
 
 /* ===== CLAIM BUTTON ===== */
@@ -562,22 +641,22 @@ header {
     font-weight: 700;
 
     color: white;
-    background: var(--accent);
+    background: var(--accent);                  /* Purple background */
 
     border-radius: 8px;
     border: none;
     cursor: pointer;
 
     box-shadow: 
-        0 4px 15px rgba(31, 106, 225, 0.3);
+        0 4px 15px rgba(145, 71, 255, 0.3);    /* Purple glow */
     transition: var(--transition);
 }
 
 .claim-btn:hover {
-    background: var(--accent-hover);
+    background: var(--accent-hover);            /* Lighter purple on hover */
     transform: translateY(-2px);
     box-shadow: 
-        0 6px 20px rgba(31, 106, 225, 0.4);
+        0 6px 20px rgba(145, 71, 255, 0.4);    /* Stronger purple glow */
 }
 
     /* ===== LEADERBOARDS SECTION ===== */
@@ -630,11 +709,11 @@ header {
     text-transform: uppercase;
 
     color: white;
-    background: var(--accent);
+    background: var(--accent);                 /* Purple background */
 
     border-radius: 20px;
     box-shadow: 
-        0 4px 12px rgba(31, 106, 225, 0.3);
+        0 4px 12px rgba(145, 71, 255, 0.3);   /* Purple glow */
 }
 
 /* ===== LOGO ===== */
@@ -647,7 +726,7 @@ header {
 
 .menace-logo {
     max-width: 200px;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 4px 12px rgba(145, 71, 255, 0.3)); /* Purple drop shadow */
 }
 
 /* ===== COUNTDOWN CONTAINER ===== */
@@ -661,8 +740,8 @@ header {
     padding: 30px;
     border-radius: var(--radius-lg);
 
-    background: rgba(28, 35, 68, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-secondary);           /* Dark purple background */
+    border: 1px solid rgba(145, 71, 255, 0.3); /* Purple border */
 
     box-shadow: var(--shadow-md);
     margin-bottom: 40px;
@@ -692,8 +771,8 @@ header {
     border-radius: var(--radius-md);
     text-align: center;
 
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(145, 71, 255, 0.08);      /* Subtle purple background */
+    border: 1px solid rgba(145, 71, 255, 0.15); /* Purple border */
 }
 
 /* ===== TIMER VALUE ===== */
@@ -702,8 +781,8 @@ header {
     font-weight: 800;
     letter-spacing: 0.5px;
 
-    color: var(--accent);
-    text-shadow: 0 2px 10px rgba(31, 106, 225, 0.3);
+    color: var(--accent);                       /* Purple numbers */
+    text-shadow: 0 2px 10px rgba(145, 71, 255, 0.3); /* Purple glow */
 }
 
 /* ===== TIMER LABEL ===== */
@@ -718,11 +797,11 @@ header {
 
     /* ===== LEADERBOARD TABLE ===== */
     .leaderboard-table-container {
-        background: rgba(28, 35, 68, 0.7);
+        background: var(--bg-secondary);         /* Dark purple background */
         border-radius: var(--radius-lg);
         overflow-x: auto;
         overflow-y: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(145, 71, 255, 0.3); /* Purple border */
         margin: 40px 0;
         box-shadow: var(--shadow-md);
         width: 100%;
@@ -736,8 +815,8 @@ header {
     }
 
     .leaderboard-table thead {
-        background: rgba(31, 106, 225, 0.15);
-        border-bottom: 2px solid var(--accent);
+        background: rgba(145, 71, 255, 0.2);    /* Purple-tinted header */
+        border-bottom: 2px solid var(--accent);  /* Purple bottom border */
     }
 
     .leaderboard-table th {
@@ -754,7 +833,7 @@ header {
 
     .leaderboard-table td {
         padding: 18px 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(145, 71, 255, 0.15); /* Purple border */
         font-size: 0.95rem;
         font-family: 'Inter', sans-serif;
     }
@@ -764,7 +843,7 @@ header {
     }
 
     .leaderboard-table tbody tr:hover {
-        background: rgba(31, 106, 225, 0.1);
+        background: rgba(145, 71, 255, 0.15);    /* Purple highlight on hover */
     }
 
     .rank-cell {
@@ -784,7 +863,7 @@ header {
         color: var(--bronze); 
     }
     .rank-4 { 
-        color: var(--accent); 
+        color: var(--accent);                     /* Purple for 4th place */
     }
 
     .user-cell {
@@ -800,14 +879,14 @@ header {
         width: 36px;
         height: 36px;
         border-radius: 8px;
-        background: var(--accent);
+        background: var(--accent);                /* Purple avatar background */
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
         color: white;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(31, 106, 225, 0.3);
+        box-shadow: 0 2px 8px rgba(145, 71, 255, 0.3); /* Purple glow */
         transition: var(--transition);
         font-size: 0.9rem;
     }
@@ -818,7 +897,7 @@ header {
 
     .wagered-cell {
         font-weight: 600;
-        color: var(--accent-light);
+        color: var(--accent-light);                /* Light purple for wagered amounts */
         white-space: nowrap;
         font-size: 1rem;
         font-family: 'Inter', sans-serif;
@@ -836,12 +915,12 @@ header {
     footer {
         margin-top: 60px;
         padding: 40px 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(145, 71, 255, 0.2); /* Purple border */
         text-align: center;
         width: 100%;
         left: 0;
         right: 0;
-        background: rgba(21, 26, 52, 0.95);
+        background: rgba(14, 11, 26, 0.95);          /* Dark purple background */
     }
 
     .footer-content {
@@ -889,14 +968,14 @@ header {
         width: 40px;
         height: 40px;
         border-radius: 8px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(145, 71, 255, 0.1);        /* Purple tint */
+        border: 1px solid rgba(145, 71, 255, 0.2);  /* Purple border */
     }
 
     .footer-icon:hover {
-        color: var(--accent);
-        background: rgba(31, 106, 225, 0.1);
-        border-color: var(--accent);
+        color: var(--accent);                        /* Purple on hover */
+        background: rgba(145, 71, 255, 0.2);        /* Stronger purple tint */
+        border-color: var(--accent);                 /* Solid purple border */
         transform: translateY(-2px);
     }
 
@@ -1231,8 +1310,8 @@ header {
           <a href="#" class="nav-link active" onclick="showSection('home')">Home</a>
           <a href="#" class="nav-link" onclick="showSection('rewards')">Rewards</a>
           <a href="#" class="nav-link" onclick="showSection('leaderboards')">Leaderboards</a>
-          <a href="https://discord.gg/KjKkVtREv2" target="_blank" class="support-btn">
-            <i class="fas fa-headset"></i> Support
+          <a href="https://waki-rewards.site/Packdraw"  class="support-btn">
+            <i class="fas fa-headset"></i> PackDraw
           </a>
         </div>
       </div>
@@ -1274,8 +1353,7 @@ header {
       </div>
 
       <div class="leaderboard-preview fade-in">
-        <h2 class="section-title">Leaderboards</h2>
-        <p class="preview-text">Rise to the top of Waki's leaderboards!</p>
+        
         
         <div class="leaderboard-table-container">
           <table class="leaderboard-table">
@@ -1360,7 +1438,7 @@ header {
               <tr>
                 <td class="rank-cell rank-4">4th Place</td>
                 <td class="prize-cell">$100</td>
-                <td><span style="color: var(--green); font-weight: 700;">High Performer</span></td>
+                <td><span style="color: var(--accent); font-weight: 700;">High Performer</span></td>
               </tr>
               <tr>
                 <td class="rank-cell">5th Place</td>
