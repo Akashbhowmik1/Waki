@@ -1548,6 +1548,9 @@ const API_URL = "https://gaze-leaderboard-api.akashbhowmik110.workers.dev/";
 const TIMER_URL = "https://leaderboard-timer.akashbhowmik110.workers.dev/";
 const REFRESH_INTERVAL = 5000; // 30 seconds
 
+const PRIZES = [1000, 500, 250, 125, 75, 50];
+
+
 /* ===============================
    HELPER: MASK USERNAME
 ================================ */
@@ -1590,21 +1593,33 @@ async function fetchLeaderboardData() {
     const data = json.data;
     data.sort((a, b) => b.wagered - a.wagered);
 
-    leaderboardData = data.map((user, index) => {
-      let prize = 0;
-      if (index === 0) prize = 700;
-      else if (index === 1) prize = 300;
-      else if (index === 2) prize = 200;
-      else if (index === 3) prize = 100;
-      else if (index === 4) prize = 50;
+  let mapped = data.map((user, index) => {
+  return {
+    rank: index + 1,
+    username: user.username,
+    wagered: Number(user.wagered || 0),
+    prize: PRIZES[index] || 0
+  };
+});
 
-      return {
-        rank: index + 1,
-        username: user.username,
-        wagered: Number(user.wagered || 0),
-        prize
-      };
-    });
+
+/* ===============================
+   FILL EMPTY SLOTS TO 20 USERS
+================================ */
+while (mapped.length < 20) {
+  const index = mapped.length;
+
+  mapped.push({
+  rank: index + 1,
+  username: "Unknown",
+  wagered: 0,
+  prize: PRIZES[index] || 0
+});
+
+}
+
+leaderboardData = mapped;
+
 
     loadPreviewTable();
     loadFullLeaderboard();
