@@ -1546,7 +1546,7 @@ let serverOffset = 0;
 ================================ */
 const API_URL = "https://gaze-leaderboard-api.akashbhowmik110.workers.dev/";
 const TIMER_URL = "https://leaderboard-timer.akashbhowmik110.workers.dev/";
-const REFRESH_INTERVAL = 5000; // 30 seconds
+const REFRESH_INTERVAL = 15000; // 30 seconds
 
 const PRIZES = [1000, 500, 250, 125, 75, 50];
 
@@ -1619,6 +1619,8 @@ while (mapped.length < 20) {
 }
 
 leaderboardData = mapped;
+localStorage.setItem("leaderboard_cache", JSON.stringify(leaderboardData));
+
 
 
     loadPreviewTable();
@@ -1764,10 +1766,24 @@ function showSection(sectionId) {
    INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
+
+  /* LOAD CACHED DATA INSTANTLY */
+  const cached = localStorage.getItem("leaderboard_cache");
+  if (cached) {
+    try {
+      leaderboardData = JSON.parse(cached);
+      loadPreviewTable();
+      loadFullLeaderboard();
+    } catch {}
+  }
+
+  /* FETCH FRESH DATA */
   fetchLeaderboardData();
   fetchTimer();
+
   setInterval(fetchLeaderboardData, REFRESH_INTERVAL);
 });
+
 </script>
 
 
