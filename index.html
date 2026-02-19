@@ -6,7 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/jpg" href="icon.jpg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+ 
+ <style>
     :root {
     /* ===== Dark Purple Theme (inspired by fainterhdrewards.com) ===== */
     --bg-primary: #0e0b1a;        /* Deep purple-black background */
@@ -84,8 +90,9 @@ html {
                 radial-gradient(circle at 20% 80%, rgba(255, 199, 0, 0.2), transparent 60%),
                 radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15), transparent 50%),
                 linear-gradient(to bottom, rgba(18, 18, 31, 0.95), var(--theme-bg-slate));
-            color: #fff;
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+             color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.01em;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -268,11 +275,13 @@ header {
 }
 
 .logo-text {
-    font-size: 1.8rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.9rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.03em;
     color: var(--text-primary);
 }
+
 
 /* ===== NAVIGATION ===== */
 .nav-links {
@@ -1530,13 +1539,13 @@ header {
     </footer>
   </div>
 
- <script>
+<script>
 /* ===============================
    GLOBAL STATE
 ================================ */
 let leaderboardData = [];
 let leaderboardFrozen = false;
-let countdownStarted = false;
+let countdownInterval = null;
 
 let leaderboardEndTime = null;
 let serverOffset = 0;
@@ -1546,13 +1555,12 @@ let serverOffset = 0;
 ================================ */
 const API_URL = "https://gaze-leaderboard-api.akashbhowmik110.workers.dev/";
 const TIMER_URL = "https://leaderboard-timer.akashbhowmik110.workers.dev/";
-const REFRESH_INTERVAL = 15000; // 30 seconds
+const REFRESH_INTERVAL = 15000;
 
 const PRIZES = [1000, 500, 250, 125, 75, 50];
 
-
 /* ===============================
-   HELPER: MASK USERNAME
+   SAFE USERNAME MASK
 ================================ */
 function maskUsername(username) {
   if (!username) return "";
@@ -1560,11 +1568,13 @@ function maskUsername(username) {
 }
 
 /* ===============================
-   FETCH TIMER (CLOUDFLARE)
+   FETCH TIMER
 ================================ */
 async function fetchTimer() {
   try {
     const res = await fetch(TIMER_URL);
+    if (!res.ok) throw new Error("Timer API failed");
+
     const json = await res.json();
 
     leaderboardEndTime = json.endTime;
@@ -1577,61 +1587,67 @@ async function fetchTimer() {
 }
 
 /* ===============================
-   FETCH LIVE LEADERBOARD
+   FETCH LEADERBOARD
 ================================ */
 async function fetchLeaderboardData() {
   if (leaderboardFrozen) return;
 
   try {
     const res = await fetch(API_URL);
-    const json = await res.json();
+    if (!res.ok) throw new Error("Leaderboard API failed");
 
-    if (!json.success) return;
+    const json = await res.json();
+    if (!json.success || !Array.isArray(json.data)) return;
 
     leaderboardFrozen = json.frozen === true;
 
-    const data = json.data;
-    data.sort((a, b) => b.wagered - a.wagered);
+    const data = json.data.sort((a, b) => b.wagered - a.wagered);
 
-  let mapped = data.map((user, index) => {
-  return {
-    rank: index + 1,
-    username: user.username,
-    wagered: Number(user.wagered || 0),
-    prize: PRIZES[index] || 0
-  };
-});
+    let mapped = data.slice(0, 10).map((user, index) => ({
+      rank: index + 1,
+      username: String(user.username || "Unknown"),
+      wagered: Number(user.wagered || 0),
+      prize: PRIZES[index] || 0
+    }));
 
+    while (mapped.length < 10) {
+      const index = mapped.length;
+      mapped.push({
+        rank: index + 1,
+        username: "Unknown",
+        wagered: 0,
+        prize: PRIZES[index] || 0
+      });
+    }
 
-/* ===============================
-   FILL EMPTY SLOTS TO 20 USERS
-================================ */
-while (mapped.length < 20) {
-  const index = mapped.length;
-
-  mapped.push({
-  rank: index + 1,
-  username: "Unknown",
-  wagered: 0,
-  prize: PRIZES[index] || 0
-});
-
-}
-
-leaderboardData = mapped;
-localStorage.setItem("leaderboard_cache", JSON.stringify(leaderboardData));
-
-
+    leaderboardData = mapped;
+    localStorage.setItem("leaderboard_cache", JSON.stringify(leaderboardData));
 
     loadPreviewTable();
     loadFullLeaderboard();
+
   } catch (err) {
     console.error("Leaderboard API error:", err);
   }
 }
 
 /* ===============================
-   PREVIEW (TOP 3)
+   SAFE TABLE CELL CREATOR
+================================ */
+function createCell(className, text, datasetKey = null, datasetValue = null) {
+  const td = document.createElement("td");
+  td.className = className;
+  td.textContent = text;
+
+  if (datasetKey && datasetValue) {
+    td.dataset[datasetKey] = datasetValue;
+  }
+
+  return td;
+}
+
+/* ===============================
+   PREVIEW TABLE (TOP 3)
 ================================ */
 function loadPreviewTable() {
   const body = document.getElementById("preview-table-body");
@@ -1642,15 +1658,34 @@ function loadPreviewTable() {
   leaderboardData.slice(0, 3).forEach(player => {
     const row = document.createElement("tr");
 
-    row.innerHTML = `
-      <td class="rank-cell rank-${player.rank}">${player.rank}</td>
-      <td class="user-cell">
-        <div class="user-avatar">${player.username.charAt(0)}</div>
-        ${maskUsername(player.username)}
-      </td>
-      <td class="wagered-cell">$${player.wagered.toLocaleString()}</td>
-      <td class="prize-cell">${player.prize ? "$" + player.prize : "-"}</td>
-    `;
+    row.appendChild(createCell(
+      `rank-cell rank-${player.rank}`,
+      player.rank
+    ));
+
+    const userCell = document.createElement("td");
+    userCell.className = "user-cell";
+
+    const avatar = document.createElement("div");
+    avatar.className = "user-avatar";
+    avatar.textContent = player.username.charAt(0);
+
+    userCell.appendChild(avatar);
+    userCell.appendChild(
+      document.createTextNode(" " + maskUsername(player.username))
+    );
+
+    row.appendChild(userCell);
+
+    row.appendChild(createCell(
+      "wagered-cell",
+      "$" + player.wagered.toLocaleString()
+    ));
+
+    row.appendChild(createCell(
+      "prize-cell",
+      player.prize ? "$" + player.prize : "-"
+    ));
 
     body.appendChild(row);
   });
@@ -1677,36 +1712,56 @@ function loadFullLeaderboard() {
   leaderboardData.forEach(player => {
     const row = document.createElement("tr");
 
-    row.innerHTML = `
-      <td class="rank-cell rank-${player.rank}">${player.rank}</td>
-      <td class="user-cell">
-        <div class="user-avatar">${player.username.charAt(0)}</div>
-        ${maskUsername(player.username)}
-      </td>
-      <td class="wagered-cell" data-user="${player.username}">
-        $${player.wagered.toLocaleString()}
-      </td>
-      <td class="prize-cell">${player.prize ? "$" + player.prize : "-"}</td>
-    `;
+    row.appendChild(createCell(
+      `rank-cell rank-${player.rank}`,
+      player.rank
+    ));
+
+    const userCell = document.createElement("td");
+    userCell.className = "user-cell";
+
+    const avatar = document.createElement("div");
+    avatar.className = "user-avatar";
+    avatar.textContent = player.username.charAt(0);
+
+    userCell.appendChild(avatar);
+    userCell.appendChild(
+      document.createTextNode(" " + maskUsername(player.username))
+    );
+
+    row.appendChild(userCell);
+
+    const wagerCell = createCell(
+      "wagered-cell",
+      "$" + player.wagered.toLocaleString(),
+      "user",
+      player.username
+    );
+
+    row.appendChild(wagerCell);
+
+    row.appendChild(createCell(
+      "prize-cell",
+      player.prize ? "$" + player.prize : "-"
+    ));
 
     body.appendChild(row);
 
-    const cell = row.querySelector(".wagered-cell");
     const oldVal = previous[player.username] || 0;
-
     if (player.wagered > oldVal) {
-      cell.style.color = "#34c759";
-      setTimeout(() => (cell.style.color = ""), 600);
+      wagerCell.style.color = "#34c759";
+      setTimeout(() => (wagerCell.style.color = ""), 600);
     }
   });
 }
 
 /* ===============================
-   COUNTDOWN (CLOUDFLARE TIME)
+   COUNTDOWN
 ================================ */
 function startCountdown() {
-  if (countdownStarted || !leaderboardEndTime) return;
-  countdownStarted = true;
+  if (!leaderboardEndTime) return;
+
+  if (countdownInterval) clearInterval(countdownInterval);
 
   function tick() {
     const now = Date.now() + serverOffset;
@@ -1717,6 +1772,7 @@ function startCountdown() {
         const el = document.getElementById(id);
         if (el) el.textContent = "00";
       });
+      clearInterval(countdownInterval);
       return;
     }
 
@@ -1732,27 +1788,22 @@ function startCountdown() {
   }
 
   tick();
-  setInterval(tick, 1000);
+  countdownInterval = setInterval(tick, 1000);
 }
 
 /* ===============================
-   SECTION NAVIGATION
+   NAVIGATION FIXED
 ================================ */
 function showSection(sectionId) {
   document.querySelectorAll(".content-section").forEach(sec =>
     sec.classList.remove("active")
   );
 
-  document.getElementById(sectionId).classList.add("active");
+  document.getElementById(sectionId)?.classList.add("active");
 
-  document.querySelectorAll(".nav-link").forEach(link =>
-    link.classList.remove("active")
+  document.querySelectorAll(".support-btn").forEach(btn =>
+    btn.classList.remove("active")
   );
-
-  const active = [...document.querySelectorAll(".nav-link")].find(link =>
-    link.textContent.toLowerCase().includes(sectionId)
-  );
-  if (active) active.classList.add("active");
 
   if (sectionId === "leaderboards") {
     fetchLeaderboardData();
@@ -1767,7 +1818,6 @@ function showSection(sectionId) {
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* LOAD CACHED DATA INSTANTLY */
   const cached = localStorage.getItem("leaderboard_cache");
   if (cached) {
     try {
@@ -1777,14 +1827,13 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {}
   }
 
-  /* FETCH FRESH DATA */
   fetchLeaderboardData();
   fetchTimer();
 
   setInterval(fetchLeaderboardData, REFRESH_INTERVAL);
 });
-
 </script>
+
 
 
 
